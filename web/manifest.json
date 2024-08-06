@@ -1,0 +1,35 @@
+{
+    "name": "imagetopdf",
+    "short_name": "imagetopdf",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+    "description": "If you need to quickly generate a PDF document from an image on your Android device, Image to PDF is the perfect tool for you. This app takes a digital image from your camera or photo gallery, and converts it into aPDF file for printing or online sharing. You can also use it to create PDFs of photos taken with your android phone's camera.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
