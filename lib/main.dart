@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:another_flushbar/flushbar_helper.dart';
-import 'package:another_flushbar/flushbar_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,16 +12,14 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
-
 main() {
   runApp(
-      Phoenix(
-        child:MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: MyApp(),
-        ),
-      )
+    Phoenix(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: MyApp(),
+      ),
+    ),
   );
 }
 
@@ -36,54 +33,66 @@ class _MyAppState extends State<MyApp> {
   final pdf = pw.Document();
   final List<File> _image = [];
   final permission = Permission.storage;
-  String? myfoolder;
+  String? myFolder;
   late final double? opticalSize;
 
 
   @override
   Widget build(BuildContext context) {
     getStoragePermission();
-   // _image.clear();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Convert Image to PDF"),backgroundColor: Colors.deepPurple,
+        title: const Text("Convert Image to PDF"),
+        backgroundColor: Colors.deepPurple,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),color: Colors.green,
+            icon: const Icon(Icons.refresh),
+            color: Colors.white,
             onPressed: () => Phoenix.rebirth(context),
-             ),
-
+          ),
           IconButton(
-              icon: const Icon(Icons.picture_as_pdf),color: Colors.white,
-              onPressed: () async {
-                // getStoragePermission();
-              if  (_image.isNotEmpty) {
+            icon: const Icon(Icons.picture_as_pdf),
+            color: Colors.white,
+            onPressed: () async {
+              if (_image.isNotEmpty) {
                 createPDF();
                 savePDF();
               } else {
-                showPrintedMessage('Error','No Image Selected');
+                showPrintedMessage('Error', 'No Image Selected');
               }
-
-              })
+            },
+          ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: getImageFromGallery,
-                backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.photo_library,opticalSize: 68,color: Colors.white70,),
-                ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: getImageFromGallery,
+            backgroundColor: Colors.deepPurple,
+            child: const Icon(Icons.photo_library, opticalSize: 68, color: Colors.white70),
+          ),
+          const SizedBox(width: 10),
+          FloatingActionButton(
+            onPressed: getImageFromCamera,
+            backgroundColor: Colors.deepPurple,
+            child: const Icon(Icons.camera, opticalSize: 68, color: Colors.white70),
+          ),
+        ],
+      ),
       body: _image.isNotEmpty
           ? ListView.builder(
         itemCount: _image.length,
         itemBuilder: (context, index) => Container(
-            height: 450,
-            width: double.infinity,
-            margin: const EdgeInsets.all(10),
-            child: Image.file(
-              _image[index],
-              fit: BoxFit.cover,
-            )),
+          height: 450,
+          width: double.infinity,
+          margin: const EdgeInsets.all(10),
+          child: Image.file(
+            _image[index],
+            fit: BoxFit.cover,
+          ),
+        ),
       )
           : Container(),
     );
@@ -102,20 +111,31 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  createPDF() async {
+  getImageFromCamera() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+    setState(() {
+      if (pickedFile != null) {
+        _image.add(File(pickedFile.path));
+      } else {
+        if (kDebugMode) {
+          print('No image selected');
+        }
+      }
+    });
+  }
 
+  createPDF() async {
     for (var img in _image) {
       final image = pw.MemoryImage(img.readAsBytesSync());
 
       pdf.addPage(pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          build: (pw.Context contex) {
-            return pw.Center(child: pw.Image(image));
-          }));
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context contex) {
+          return pw.Center(child: pw.Image(image));
+        },
+      ));
     }
-
   }
-
   createFolder(String myfoolder,String myfoolder2) async {
     PermissionStatus status = await Permission.storage.request();
     //PermissionStatus status1 = await Permission.accessMediaLocation.request();
@@ -126,7 +146,7 @@ class _MyAppState extends State<MyApp> {
       bool checkFolder = _checkDirectoryExistsSync('$path/$myfoolder');
       print(checkFolder);
       if (!checkFolder) {
-          Directory('$path/$myfoolder/').create(recursive: true).then((Directory directory) {});
+        Directory('$path/$myfoolder/').create(recursive: true).then((Directory directory) {});
 
       } else {
         if (kDebugMode) {
@@ -146,7 +166,7 @@ class _MyAppState extends State<MyApp> {
 
 
 
-        // The created directory is returned as a Future.
+      // The created directory is returned as a Future.
 
     }
 
